@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>음성 플레이어</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        text-align: center;
+        padding: 20px;
+        background-color: #f4f4f4;
+      }
+
+      h1 {
+        color: #333;
+      }
+
+      #audio-player {
+        width: 80%;
+        margin-bottom: 20px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #fff;
+        /* 재생 버튼 색상 변경 */
+        color: #4285f4;
+      }
+
+      #audio-list {
+        width: 80%;
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #fff;
+      }
+
+      .task-btn {
+        padding: 15px;
+        font-size: 18px;
+        margin-right: 10px;
+        cursor: pointer;
+        border: 2px solid #012a6b;
+        border-radius: 5px;
+        background-color: #fff;
+        color: #000000;
+        transition: background-color 0.3s;
+      }
+
+      .task-btn:hover {
+        background-color: #012a6b;
+        color: #ffffff;
+      }
+
+      .task-btn.active {
+        background-color: #012a6b;
+        color: #ffffff;
+      }
+
+      button i {
+        margin-right: 5px;
+      }
+
+      #current-file {
+        margin-top: 10px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      #speed-slider {
+        width: 60%;
+        margin-top: 10px;
+      }
+
+      #speed-label {
+        margin-top: 10px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>음성 플레이어</h1>
+
+    <div style="margin-bottom: 30px">
+      <button class="task-btn" data-task="audio/task1">Task 1</button>
+      <button class="task-btn" data-task="audio/task2">Task 2</button>
+      <button class="task-btn" data-task="audio/task3">Task 3</button>
+      <button class="task-btn" data-task="audio/task4">Task 4</button>
+      <button class="task-btn" data-task="audio/task5">Task 5</button>
+      <button class="task-btn" data-task="audio/task6">Task 6</button>
+      <button class="task-btn" data-task="audio/task7">Task 7</button>
+    </div>
+
+    <audio id="audio-player" controls></audio><br />
+
+    <label for="audio-list">음성 파일 선택:</label>
+    <select id="audio-list"></select
+    ><br />
+
+    <button id="prev-btn"><i class="fas fa-step-backward"></i> 이전</button>
+    <button id="play-btn"><i class="fas fa-play"></i> 재생</button>
+    <button id="stop-btn"><i class="fas fa-stop"></i> 정지</button>
+    <button id="next-btn">다음 <i class="fas fa-step-forward"></i></button>
+
+    <div id="current-file"></div>
+
+    <label for="speed-slider">배속:</label>
+    <input
+      type="range"
+      id="speed-slider"
+      min="0.5"
+      max="2"
+      step="0.1"
+      value="1"
+    /><br />
+    <div id="speed-label">배속: <span id="speed-value">1.0</span></div>
+
+    <script>
+      let audioPlayer = document.getElementById("audio-player");
+      let playBtn = document.getElementById("play-btn");
+      let stopBtn = document.getElementById("stop-btn");
+      let prevBtn = document.getElementById("prev-btn");
+      let nextBtn = document.getElementById("next-btn");
+      let audioList = document.getElementById("audio-list");
+      let currentFileDiv = document.getElementById("current-file");
+      let speedSlider = document.getElementById("speed-slider");
+      let speedLabel = document.getElementById("speed-value");
+      let taskButtons = document.querySelectorAll(".task-btn");
+
+      let currentIndex = 0;
+      let isPaused = false;
+
+      // Task에 따른 오디오 파일들을 저장하는 배열들
+      let audioFiles1 = [
+        "audio/task1/1-1.wav",
+        "audio/task1/1-2.wav",
+        // 추가 파일 경로들
+      ];
+
+      let audioFiles2 = [
+        "audio/task2/2-1.wav",
+        "audio/task2/2-2.wav",
+        // 추가 파일 경로들
+      ];
+
+      let audioFiles3 = [
+        "audio/task3/3-1.wav",
+        "audio/task3/3-2.wav",
+        // 추가 파일 경로들
+      ];
+
+      let audioFiles4 = [
+        "audio/task4/4-1.wav",
+        "audio/task4/4-2.wav",
+        // 추가 파일 경로들
+      ];
+
+      let audioFiles5 = [
+        "audio/task5/5-1.wav",
+        "audio/task5/5-2.wav",
+        // 추가 파일 경로들
+      ];
+
+      let audioFiles6 = [
+        "audio/task6/6-1.wav",
+        "audio/task6/6-2.wav",
+        // 추가 파일 경로들
+      ];
+
+      let audioFiles7 = [
+        "audio/task7/7-1.wav",
+        "audio/task7/7-2.wav",
+        // 추가 파일 경로들
+      ];
+
+      taskButtons.forEach(function (button, index) {
+        button.addEventListener("click", function () {
+          // 선택된 버튼의 data-task 속성 값에 따라서 해당 Task의 오디오 파일들로 변경
+          let task = button.getAttribute("data-task");
+          updateAudioFiles(task);
+          currentIndex = 0;
+          audioList.value = currentIndex;
+          playBtn.click();
+        });
+      });
+
+      // 초기에는 Task 1의 오디오 파일들을 설정
+      updateAudioFiles("audio/task1");
+
+      function updateAudioFiles(task) {
+        // Task에 따른 오디오 파일들을 audioFiles 배열에 업데이트
+        switch (task) {
+          case "audio/task1":
+            audioFiles = audioFiles1;
+            break;
+          case "audio/task2":
+            audioFiles = audioFiles2;
+            break;
+          case "audio/task3":
+            audioFiles = audioFiles3;
+            break;
+          case "audio/task4":
+            audioFiles = audioFiles4;
+            break;
+          case "audio/task5":
+            audioFiles = audioFiles5;
+            break;
+          case "audio/task6":
+            audioFiles = audioFiles6;
+            break;
+          case "audio/task7":
+            audioFiles = audioFiles7;
+            break;
+          default:
+            audioFiles = [];
+        }
+
+        // 현재 선택된 Task 버튼을 강조
+        taskButtons.forEach(function (button) {
+          button.classList.remove("active");
+        });
+        let activeButton = document.querySelector(
+          `.task-btn[data-task="${task}"]`
+        );
+        activeButton.classList.add("active");
+
+        // audioList 갱신
+        audioList.innerHTML = "";
+        audioFiles.forEach(function (file, index) {
+          let option = document.createElement("option");
+          option.value = index;
+          option.text = file.split("/").pop();
+          audioList.add(option);
+        });
+      }
+
+      audioList.addEventListener("change", function () {
+        currentIndex = parseInt(audioList.value, 10);
+        playBtn.click();
+      });
+
+      playBtn.addEventListener("click", function () {
+        let selectedFile = audioFiles[currentIndex];
+
+        if (selectedFile) {
+          let audioUrl = selectedFile;
+          audioPlayer.src = audioUrl;
+          audioPlayer.playbackRate = parseFloat(speedSlider.value);
+
+          // 정지 상태에서 재생 버튼을 눌렀을 때
+          if (isPaused) {
+            // 멈춘 구간부터 재생
+            audioPlayer.currentTime = audioPlayer.stoppedTime;
+            isPaused = false;
+          } else {
+            // 새로 시작하는 경우 1초 딜레이 후 재생 시작
+            setTimeout(() => {
+              audioPlayer.play();
+            }, 1000);
+          }
+
+          updateCurrentFile();
+        }
+      });
+
+      stopBtn.addEventListener("click", function () {
+        audioPlayer.pause();
+        // 정지 버튼을 누른 시점의 currentTime 저장
+        audioPlayer.stoppedTime = audioPlayer.currentTime;
+        // currentTime 초기화
+        audioPlayer.currentTime = 0;
+        isPaused = true;
+      });
+
+      prevBtn.addEventListener("click", function () {
+        if (currentIndex > 0) {
+          currentIndex--;
+          audioList.value = currentIndex;
+          playBtn.click();
+        }
+      });
+
+      nextBtn.addEventListener("click", function () {
+        if (currentIndex < audioFiles.length - 1) {
+          currentIndex++;
+          audioList.value = currentIndex;
+          playBtn.click();
+        }
+      });
+
+      function updateCurrentFile() {
+        let selectedFile = audioFiles[currentIndex];
+        currentFileDiv.textContent = selectedFile.split("/").pop();
+      }
+
+      speedSlider.addEventListener("input", function () {
+        let speedValue = parseFloat(speedSlider.value);
+        audioPlayer.playbackRate = speedValue;
+        speedLabel.textContent = speedValue.toFixed(1);
+      });
+
+      audioPlayer.addEventListener("ended", function () {
+        // 1초 딜레이 후에 다음 곡으로 자동으로 넘어가도록 설정
+        setTimeout(function () {
+          if (currentIndex < audioFiles.length - 1) {
+            currentIndex++;
+            audioList.value = currentIndex;
+            playBtn.click();
+          }
+        }, 1000);
+      });
+    </script>
+  </body>
+</html>
