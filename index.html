@@ -13,52 +13,75 @@
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         text-align: center;
         padding: 20px;
-        background-color: #f4f4f4;
+        background-color: #f8f9fa;
       }
 
       h1 {
-        color: #333;
+        color: #007bff;
       }
 
-      #audio-player {
-        width: 80%;
-        margin-bottom: 20px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        background-color: #fff;
-        /* 재생 버튼 색상 변경 */
-        color: #4285f4;
-      }
-
-      #audio-list {
-        width: 80%;
-        margin-bottom: 20px;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        background-color: #fff;
+      #player-container {
+        max-width: 700px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       }
 
       .task-btn {
-        padding: 15px;
-        font-size: 18px;
-        margin-right: 10px;
+        padding: 10px 15px;
+        font-size: 16px;
+        margin: 5px;
         cursor: pointer;
-        border: 2px solid #012a6b;
+        border: 2px solid #00346c;
         border-radius: 5px;
-        background-color: #fff;
+        background-color: #ffffff;
         color: #000000;
         transition: background-color 0.3s;
       }
 
       .task-btn:hover {
-        background-color: #012a6b;
+        background-color: #00346c;
         color: #ffffff;
       }
 
       .task-btn.active {
-        background-color: #012a6b;
+        background-color: #00346c;
         color: #ffffff;
+      }
+
+      #audio-player {
+        width: 100%;
+        margin-top: 20px;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        background-color: #f1f3f5;
+      }
+
+      #audio-list-container {
+        margin-top: 20px;
+        text-align: left;
+      }
+
+      label {
+        font-size: 16px;
+        margin-right: 10px;
+        color: #007bff;
+      }
+
+      #audio-list {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        background-color: #f1f3f5;
+        margin-bottom: 10px;
+      }
+
+      #control-buttons {
+        margin-top: 10px;
       }
 
       button i {
@@ -68,57 +91,62 @@
       #current-file {
         margin-top: 10px;
         font-weight: bold;
-        color: #333;
+        color: #007bff;
       }
 
       #speed-slider {
-        width: 60%;
+        width: 80%;
         margin-top: 10px;
       }
 
       #speed-label {
         margin-top: 10px;
         font-size: 14px;
+        color: #007bff;
       }
     </style>
   </head>
   <body>
-    <h1>음성 플레이어</h1>
+    <div id="player-container">
+      <h1>키오스크 음성 플레이어</h1>
 
-    <div style="margin-bottom: 30px">
-      <button class="task-btn" data-task="audio/task1">Task 1</button>
-      <button class="task-btn" data-task="audio/task2">Task 2</button>
-      <button class="task-btn" data-task="audio/task3">Task 3</button>
-      <button class="task-btn" data-task="audio/task4">Task 4</button>
-      <button class="task-btn" data-task="audio/task5">Task 5</button>
-      <button class="task-btn" data-task="audio/task6">Task 6</button>
-      <button class="task-btn" data-task="audio/task7">Task 7</button>
+      <div>
+        <button class="task-btn" data-task="audio/task1">Task 1</button>
+        <button class="task-btn" data-task="audio/task2">Task 2</button>
+        <button class="task-btn" data-task="audio/task3">Task 3</button>
+        <button class="task-btn" data-task="audio/task4">Task 4</button>
+        <button class="task-btn" data-task="audio/task5">Task 5</button>
+        <button class="task-btn" data-task="audio/task6">Task 6</button>
+        <button class="task-btn" data-task="audio/task7">Task 7</button>
+      </div>
+
+      <audio id="audio-player" controls></audio>
+
+      <div id="audio-list-container">
+        <label for="audio-list">음성 파일 선택:</label>
+        <select id="audio-list"></select>
+      </div>
+
+      <div id="control-buttons">
+        <button id="prev-btn"><i class="fas fa-step-backward"></i> 이전</button>
+        <button id="play-btn"><i class="fas fa-play"></i> 재생</button>
+        <button id="stop-btn"><i class="fas fa-stop"></i> 정지</button>
+        <button id="next-btn">다음 <i class="fas fa-step-forward"></i></button>
+      </div>
+
+      <div id="current-file"></div>
+
+      <label for="speed-slider">배속:</label>
+      <input
+        type="range"
+        id="speed-slider"
+        min="0.5"
+        max="2"
+        step="0.1"
+        value="1"
+      />
+      <div id="speed-label">배속: <span id="speed-value">1.0</span></div>
     </div>
-
-    <audio id="audio-player" controls></audio><br />
-
-    <label for="audio-list">음성 파일 선택:</label>
-    <select id="audio-list"></select
-    ><br />
-
-    <button id="prev-btn"><i class="fas fa-step-backward"></i> 이전</button>
-    <button id="play-btn"><i class="fas fa-play"></i> 재생</button>
-    <button id="stop-btn"><i class="fas fa-stop"></i> 정지</button>
-    <button id="next-btn">다음 <i class="fas fa-step-forward"></i></button>
-
-    <div id="current-file"></div>
-
-    <label for="speed-slider">배속:</label>
-    <input
-      type="range"
-      id="speed-slider"
-      min="0.5"
-      max="2"
-      step="0.1"
-      value="1"
-    /><br />
-    <div id="speed-label">배속: <span id="speed-value">1.0</span></div>
-
     <script>
       let audioPlayer = document.getElementById("audio-player");
       let playBtn = document.getElementById("play-btn");
@@ -135,47 +163,23 @@
       let isPaused = false;
 
       // Task에 따른 오디오 파일들을 저장하는 배열들
-      let audioFiles1 = [
-        "audio/task1/1-1.wav",
-        "audio/task1/1-2.wav",
-        // 추가 파일 경로들
-      ];
+      let audioFiles1 = [];
+      let audioFiles2 = [];
+      let audioFiles3 = [];
+      let audioFiles4 = [];
+      let audioFiles5 = [];
+      let audioFiles6 = [];
+      let audioFiles7 = [];
 
-      let audioFiles2 = [
-        "audio/task2/2-1.wav",
-        "audio/task2/2-2.wav",
-        // 추가 파일 경로들
-      ];
-
-      let audioFiles3 = [
-        "audio/task3/3-1.wav",
-        "audio/task3/3-2.wav",
-        // 추가 파일 경로들
-      ];
-
-      let audioFiles4 = [
-        "audio/task4/4-1.wav",
-        "audio/task4/4-2.wav",
-        // 추가 파일 경로들
-      ];
-
-      let audioFiles5 = [
-        "audio/task5/5-1.wav",
-        "audio/task5/5-2.wav",
-        // 추가 파일 경로들
-      ];
-
-      let audioFiles6 = [
-        "audio/task6/6-1.wav",
-        "audio/task6/6-2.wav",
-        // 추가 파일 경로들
-      ];
-
-      let audioFiles7 = [
-        "audio/task7/7-1.wav",
-        "audio/task7/7-2.wav",
-        // 추가 파일 경로들
-      ];
+      for (let i = 1; i < 38; i++) {
+        audioFiles1.push("audio/task1/1-" + i + ".wav");
+        if (i < 14) audioFiles2.push("audio/task2/2-" + i + ".wav");
+        if (i < 7) audioFiles3.push("audio/task3/3-" + i + ".wav");
+        if (i < 12) audioFiles4.push("audio/task4/4-" + i + ".wav");
+        if (i < 13) audioFiles5.push("audio/task5/5-" + i + ".wav");
+        if (i < 22) audioFiles6.push("audio/task6/6-" + i + ".wav");
+        if (i < 11) audioFiles7.push("audio/task7/7-" + i + ".wav");
+      }
 
       taskButtons.forEach(function (button, index) {
         button.addEventListener("click", function () {
