@@ -8,6 +8,12 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"
     />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+      integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <style>
       body {
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -111,14 +117,14 @@
       <h1>키오스크 음성 안내 플레이어</h1>
 
       <div>
-        <button class="task-btn" data-task="audio/task1">Task 1</button>
-        <button class="task-btn" data-task="audio/task2">Task 2</button>
-        <button class="task-btn" data-task="audio/task3">Task 3</button>
-        <button class="task-btn" data-task="audio/task4">Task 4</button>
-        <button class="task-btn" data-task="audio/task5">Task 5</button>
-        <button class="task-btn" data-task="audio/task6">Task 6</button>
-        <button class="task-btn" data-task="audio/task7">Task 7</button>
-        <button class="task-btn" data-task="audio/task8">Task 8</button>
+        <button class="task-btn" data-task="audio2/task1">Task 1</button>
+        <button class="task-btn" data-task="audio2/task2">Task 2</button>
+        <button class="task-btn" data-task="audio2/task3">Task 3</button>
+        <button class="task-btn" data-task="audio2/task4">Task 4</button>
+        <button class="task-btn" data-task="audio2/task5">Task 5</button>
+        <button class="task-btn" data-task="audio2/task6">Task 6</button>
+        <button class="task-btn" data-task="audio2/task7">Task 7</button>
+        <button id="img_btn" class="task-btn">이미지 생성 버튼</button>
       </div>
 
       <audio id="audio-player" controls></audio>
@@ -171,17 +177,15 @@
       let audioFiles5 = [];
       let audioFiles6 = [];
       let audioFiles7 = [];
-      let audioFiles8 = [];
 
-      for (let i = 1; i < 38; i++) {
-        audioFiles1.push("audio/task1/1-" + i + ".wav");
-        if (i < 13) audioFiles2.push("audio/task2/2-" + i + ".wav");
-        if (i < 6) audioFiles3.push("audio/task3/3-" + i + ".wav");
-        if (i < 11) audioFiles4.push("audio/task4/4-" + i + ".wav");
-        if (i < 13) audioFiles5.push("audio/task5/5-" + i + ".wav");
-        if (i < 21) audioFiles6.push("audio/task6/6-" + i + ".wav");
-        if (i < 27) audioFiles7.push("audio/task7/7-" + i + ".wav");
-        if (i < 13) audioFiles8.push("audio/task8/8-" + i + ".wav");
+      for (let i = 1; i < 16; i++) {
+        audioFiles1.push("audio2/task1/1-" + i + ".wav");
+        if (i < 13) audioFiles2.push("audio2/task2/2-" + i + ".wav");
+        if (i < 13) audioFiles3.push("audio2/task3/3-" + i + ".wav");
+        if (i < 7) audioFiles4.push("audio2/task4/4-" + i + ".wav");
+        if (i < 16) audioFiles5.push("audio2/task5/5-" + i + ".wav");
+        if (i < 13) audioFiles6.push("audio2/task6/6-" + i + ".wav");
+        if (i < 6) audioFiles7.push("audio2/task7/7-" + i + ".wav");
       }
 
       taskButtons.forEach(function (button, index) {
@@ -196,34 +200,31 @@
       });
 
       // 초기에는 Task 1의 오디오 파일들을 설정
-      updateAudioFiles("audio/task1");
+      updateAudioFiles("audio2/task1");
 
       function updateAudioFiles(task) {
         // Task에 따른 오디오 파일들을 audioFiles 배열에 업데이트
         switch (task) {
-          case "audio/task1":
+          case "audio2/task1":
             audioFiles = audioFiles1;
             break;
-          case "audio/task2":
+          case "audio2/task2":
             audioFiles = audioFiles2;
             break;
-          case "audio/task3":
+          case "audio2/task3":
             audioFiles = audioFiles3;
             break;
-          case "audio/task4":
+          case "audio2/task4":
             audioFiles = audioFiles4;
             break;
-          case "audio/task5":
+          case "audio2/task5":
             audioFiles = audioFiles5;
             break;
-          case "audio/task6":
+          case "audio2/task6":
             audioFiles = audioFiles6;
             break;
-          case "audio/task7":
+          case "audio2/task7":
             audioFiles = audioFiles7;
-            break;
-          case "audio/task8":
-            audioFiles = audioFiles8;
             break;
           default:
             audioFiles = [];
@@ -260,7 +261,8 @@
           let audioUrl = selectedFile;
           audioPlayer.src = audioUrl;
           audioPlayer.playbackRate = parseFloat(speedSlider.value);
-
+          console.log(audioPlayer);
+          // localStorage.setItem("Prototype", "prototypeB");
           // 정지 상태에서 재생 버튼을 눌렀을 때
           if (isPaused) {
             // 멈춘 구간부터 재생
@@ -305,6 +307,9 @@
       function updateCurrentFile() {
         let selectedFile = audioFiles[currentIndex];
         currentFileDiv.textContent = selectedFile.split("/").pop();
+        let file = selectedFile.split("/").pop();
+        console.log("현재 재생 중인 파일:", selectedFile.split("/").pop());
+        localStorage.setItem("file", file);
       }
 
       speedSlider.addEventListener("input", function () {
@@ -323,6 +328,16 @@
           }
         }, 1000);
       });
+
+      $("#img_btn").click(() => {
+        console.log("click");
+        window.open("img.html");
+      });
+
+      // document.addEventListener("click", () => {
+      //   console.log("click");
+      //   window.open("../html/kiosk_1_Touch_screen.html");
+      // });
     </script>
   </body>
 </html>
